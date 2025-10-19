@@ -1,4 +1,4 @@
-[build]
+B[build]
   command = "npm ci && npm run build"
   publish = "dist"
 
@@ -11,3 +11,46 @@
   for = "/assets/*"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
+
+# Reverse-proxy API routes to the backend on Render (replace the URL below with your actual backend URL)
+[[redirects]]
+  from = "/upload"
+  to = "https://app-orario-backend.onrender.com/upload"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/run"
+  to = "https://app-orario-backend.onrender.com/run"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/status/*"
+  to = "https://app-orario-backend.onrender.com/status/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/results/*"
+  to = "https://app-orario-backend.onrender.com/results/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/download/*"
+  to = "https://app-orario-backend.onrender.com/download/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/examples/*"
+  to = "https://app-orario-backend.onrender.com/examples/:splat"
+  status = 200
+  force = true
+
+# Optional: SPA fallback so deep links route to index.html
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
