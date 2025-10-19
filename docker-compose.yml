@@ -1,0 +1,22 @@
+version: '3.9'
+services:
+  app:
+    build: .
+    image: excel-runner:latest
+    environment:
+      - APP_PROGRAM_ENTRYPOINT=${APP_PROGRAM_ENTRYPOINT:-mio_runner.py:main}
+      - APP_MAX_FILE_SIZE_MB=${APP_MAX_FILE_SIZE_MB:-50}
+      - APP_ALLOWED_EXTENSIONS=${APP_ALLOWED_EXTENSIONS:-.xlsx}
+      - APP_JOB_TTL_MINUTES=${APP_JOB_TTL_MINUTES:-120}
+      - APP_OUTPUT_DIR_BASE=/data
+      - APP_FRONTEND_DIST_DIR=/app/frontend_dist
+      - APP_HOST=0.0.0.0
+      - APP_PORT=8080
+    volumes:
+      - data:/data
+      - ./mio_runner.py:/app/mio_runner.py:ro
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+volumes:
+  data:

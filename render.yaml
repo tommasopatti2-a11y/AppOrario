@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: app-orario-backend
+    env: python
+    plan: free
+    autoDeploy: true
+    region: frankfurt
+    buildCommand: pip install -r backend/requirements.txt
+    startCommand: uvicorn app.main:app --app-dir backend --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: APP_PROGRAM_ENTRYPOINT
+        value: mio_runner.py:main
+      - key: MAX_FILE_SIZE_MB
+        value: "50"
+      - key: JOB_TTL_MINUTES
+        value: "120"
+      - key: ALLOWED_EXTENSIONS
+        value: '[".xlsx"]'

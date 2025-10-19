@@ -1,0 +1,12 @@
+{
+  "description": "Example Excel schema validation config. Customize as needed.",
+  "required_sheets": ["Classi", "Studenti"],
+  "sheets": {
+    "Classi": {
+      "required_headers": ["ID", "Nome", "Anno"]
+    },
+    "Studenti": {
+      "required_headers": ["ID", "Nome", "Cognome", "Classe", "Email"]
+    }
+  }
+}

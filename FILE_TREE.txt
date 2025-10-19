@@ -1,0 +1,317 @@
+AppOrario/
+│
+├── 📄 Documentation (Start Here)
+│   ├── INDEX.md                      # Navigation guide to all docs
+│   ├── SUMMARY.md                    # Project overview and quick reference
+│   ├── README.md                     # Full feature documentation
+│   ├── QUICK_START.md                # 5-minute setup guide (Windows-friendly)
+│   ├── PROJECT_STRUCTURE.md          # Architecture and codebase layout
+│   ├── CUSTOMIZATION.md              # Integration and extension guide
+│   ├── DEPLOYMENT.md                 # Production deployment guide
+│   ├── TROUBLESHOOTING.md            # Common issues and solutions
+│   ├── CHECKLIST.md                  # Completion and acceptance tests
+│   └── FILE_TREE.txt                 # This file
+│
+├── 🐍 Backend (FastAPI)
+│   └── backend/
+│       ├── app/
+│       │   ├── __init__.py           # Package marker
+│       │   ├── main.py               # FastAPI app + all endpoints
+│       │   ├── config.py             # Settings from environment
+│       │   ├── models.py             # Job, Session, JobStatus dataclasses
+│       │   ├── storage.py            # File operations (sanitize, zip, cleanup)
+│       │   ├── worker.py             # Job queue, worker thread, TTL cleanup
+│       │   ├── adapter.py            # Run entrypoint (function or subprocess)
+│       │   ├── validation.py         # Optional Excel schema validation
+│       │   └── logging_config.py     # Logging setup
+│       ├── requirements.txt          # Python dependencies
+│       └── run_uvicorn.py            # Helper script for local dev
+│
+├── ⚛️ Frontend (React + Vite)
+│   └── frontend/
+│       ├── src/
+│       │   ├── main.tsx              # React entry point
+│       │   ├── App.tsx               # Main UI component (upload, run, results)
+│       │   └── vite-env.d.ts         # Vite type definitions
+│       ├── index.html                # HTML template
+│       ├── package.json              # Node.js dependencies
+│       ├── tsconfig.json             # TypeScript configuration
+│       ├── vite.config.ts            # Vite build configuration
+│       ├── .gitignore                # Frontend-specific ignores
+│       └── dist/                     # Build output (created by npm run build)
+│
+├── 🐳 Docker & Deployment
+│   ├── Dockerfile                    # Multi-stage build (frontend + backend)
+│   ├── docker-compose.yml            # Docker Compose configuration
+│   ├── start.sh                      # Bash startup script (Linux/macOS)
+│   └── start.bat                     # Batch startup script (Windows)
+│
+├── 🔧 Configuration & Examples
+│   ├── .env.example                  # Environment variables template
+│   ├── .env.local.example            # Alternative env template
+│   ├── .gitignore                    # Git ignore rules
+│   ├── runner.py                     # Example entrypoint (customize this)
+│   └── schema.example.json           # Example Excel schema validation config
+│
+├── 🧪 Testing
+│   └── test_e2e.py                   # End-to-end test script
+│
+└── 📁 Runtime Directories (created at runtime)
+    └── data/
+        └── sessions/
+            └── <session_id>/
+                ├── inputs/           # Uploaded Excel files
+                └── jobs/
+                    └── <job_id>/
+                        ├── job.log   # Job execution log
+                        └── <outputs> # Generated result files
+
+
+FILE DESCRIPTIONS
+================
+
+Documentation Files
+-------------------
+INDEX.md                 - Start here! Navigation guide to all documentation
+SUMMARY.md              - Quick overview, file structure, workflow, next steps
+README.md               - Complete feature list, API contract, configuration
+QUICK_START.md          - Get running in 5 minutes (Windows-friendly)
+PROJECT_STRUCTURE.md    - Architecture, components, data flow, API endpoints
+CUSTOMIZATION.md        - Integrate Python program, add features, extend
+DEPLOYMENT.md           - Production deployment (Docker, K8s, nginx, SSL)
+TROUBLESHOOTING.md      - Common issues and solutions
+CHECKLIST.md            - Completion status, acceptance tests, security review
+FILE_TREE.txt           - This file
+
+
+Backend Files
+-------------
+main.py                 - FastAPI application with all endpoints
+                         - POST /upload, /run
+                         - GET /status, /logs, /results, /download, /health
+                         - DELETE /jobs
+
+config.py               - Pydantic settings from environment variables
+                         - APP_PROGRAM_ENTRYPOINT, MAX_FILE_SIZE_MB, etc.
+                         - Normalizes env values (extensions, paths)
+
+models.py               - Dataclasses for Job, Session, JobStatus
+                         - Defines job states and data structures
+
+storage.py              - File operations
+                         - sanitize_filename() - prevent path traversal
+                         - ensure_session_dirs() - create session folders
+                         - create_job_dir() - create job workdir
+                         - zip_directory() - create ZIP of results
+                         - list_files() - enumerate output files
+                         - cleanup_dir() - remove temporary files
+
+worker.py               - Job queue and worker thread
+                         - JobQueue class with in-memory job storage
+                         - Worker thread that executes jobs
+                         - GC thread that cleans up old jobs (TTL)
+                         - Job status transitions: queued → running → succeeded|failed
+
+adapter.py              - Execute the entrypoint
+                         - run_entrypoint() - call function or subprocess
+                         - Pass input_paths, output_dir, **options
+                         - Capture stdout/stderr to job.log
+                         - Return exit code
+
+validation.py           - Optional Excel schema validation
+                         - SchemaValidator class
+                         - Check required sheets and headers
+                         - Configurable schema (JSON)
+
+logging_config.py       - Logging configuration
+                         - Console and file handlers
+                         - Structured logging setup
+
+requirements.txt        - Python dependencies
+                         - fastapi, uvicorn, pydantic, openpyxl, etc.
+
+run_uvicorn.py          - Helper script to run backend with reload
+
+
+Frontend Files
+--------------
+main.tsx                - React entry point
+                         - Creates root and renders App component
+
+App.tsx                 - Main UI component
+                         - Upload section (drag&drop, file picker)
+                         - Parameters section (custom options)
+                         - Status section (progress bar, logs)
+                         - Results section (file list, downloads)
+                         - Polling logic for job status/logs
+
+vite-env.d.ts           - TypeScript definitions for Vite
+
+index.html              - HTML template
+                         - Root div for React
+                         - Script tag for main.tsx
+
+package.json            - Node.js dependencies
+                         - react, react-dom, vite, typescript, @vitejs/plugin-react
+
+tsconfig.json           - TypeScript compiler options
+                         - Target ES2020, JSX support, strict mode
+
+vite.config.ts          - Vite build configuration
+                         - React plugin
+                         - API proxy configuration
+                         - Build output directory
+
+
+Docker Files
+------------
+Dockerfile              - Multi-stage build
+                         - Stage 1: Build frontend (Node)
+                         - Stage 2: Build backend (Python)
+                         - Stage 3: Runtime (Python slim)
+                         - Copies frontend dist to backend static mount
+
+docker-compose.yml      - Docker Compose configuration
+                         - Service: app (FastAPI + frontend)
+                         - Volume: data (persistent storage)
+                         - Volume mount: runner.py (your entrypoint)
+                         - Port: 8080:8080
+                         - Environment variables from .env
+
+start.sh                - Bash script for local development
+                         - Creates Python venv
+                         - Installs backend deps
+                         - Builds frontend
+                         - Starts backend on port 8080
+
+start.bat               - Batch script for Windows
+                         - Same as start.sh but for PowerShell
+
+
+Configuration Files
+-------------------
+.env.example            - Template for environment variables
+                         - Copy to .env and customize
+
+.env.local.example      - Alternative env template
+
+.gitignore              - Git ignore rules
+                         - Excludes: __pycache__, node_modules, .venv, data, .env
+
+runner.py               - Example entrypoint
+                         - Function mode: main(input_paths, output_dir, **options)
+                         - Subprocess mode: python runner.py --inputs [...] --out DIR
+                         - Replace with your actual program
+
+schema.example.json     - Example Excel schema validation
+                         - Required sheets and headers
+                         - Use as template for your schema
+
+
+Testing Files
+-------------
+test_e2e.py             - End-to-end test script
+                         - Tests upload, run, status polling, logs, results, download
+                         - Requires backend running on http://localhost:8080
+
+
+Runtime Directories
+-------------------
+data/                   - Storage base directory (created at runtime)
+  sessions/             - Session storage
+    <session_id>/       - Unique session folder
+      inputs/           - Uploaded Excel files
+      jobs/             - Job execution folders
+        <job_id>/       - Unique job folder
+          job.log       - Job execution log
+          <outputs>     - Generated result files
+
+
+QUICK REFERENCE
+===============
+
+Start Backend:
+  python -m uvicorn app.main:app --app-dir backend --reload
+
+Start Frontend (dev):
+  cd frontend && npm run dev
+
+Build Frontend:
+  cd frontend && npm run build
+
+Run with Docker:
+  docker compose up --build
+
+Test E2E:
+  python test_e2e.py
+
+Health Check:
+  curl http://localhost:8080/health
+
+Upload Files:
+  curl -F "files=@test.xlsx" http://localhost:8080/upload
+
+Run Job:
+  curl -H "Content-Type: application/json" \
+    -d '{"session_id":"...","options":{}}' \
+    http://localhost:8080/run
+
+Check Status:
+  curl http://localhost:8080/status/<JOB_ID>
+
+Get Logs:
+  curl http://localhost:8080/logs/<JOB_ID>
+
+List Results:
+  curl http://localhost:8080/results/<JOB_ID>
+
+Download ZIP:
+  curl -OJ http://localhost:8080/download/<JOB_ID>/all.zip
+
+
+TOTAL FILE COUNT
+================
+Documentation:  9 files
+Backend:        9 files
+Frontend:       7 files
+Docker:         4 files
+Config:         5 files
+Testing:        1 file
+─────────────────────────
+Total:         35 files
+
+
+SIZE ESTIMATE
+=============
+Backend code:     ~2 KB
+Frontend code:    ~8 KB
+Dependencies:     ~500 MB (node_modules + venv)
+Docker image:     ~400 MB
+Data (runtime):   Variable (depends on uploads)
+
+
+NEXT STEPS
+==========
+1. Read INDEX.md or QUICK_START.md
+2. Run locally: python -m uvicorn app.main:app --app-dir backend --reload
+3. Customize runner.py with your logic
+4. Deploy with Docker: docker compose up --build
+5. Monitor with logs and health checks
+
+
+SUPPORT
+=======
+- Questions? → INDEX.md (navigation guide)
+- Setup issues? → QUICK_START.md
+- Architecture? → PROJECT_STRUCTURE.md
+- Customization? → CUSTOMIZATION.md
+- Production? → DEPLOYMENT.md
+- Errors? → TROUBLESHOOTING.md
+- Status? → CHECKLIST.md
+
+
+VERSION & DATE
+==============
+Version:  0.1.0
+Updated:  2025-10-19
+Status:   ✅ Complete and Ready for Production

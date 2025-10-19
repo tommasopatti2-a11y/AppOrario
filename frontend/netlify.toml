@@ -1,0 +1,13 @@
+[build]
+  command = "npm ci && npm run build"
+  publish = "dist"
+
+[build.environment]
+  # Imposta qui l'URL del backend FastAPI in produzione (aggiorna dopo il deploy)
+  # Esempio: "https://api.miodominio.it"
+  VITE_API_BASE = ""
+
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
