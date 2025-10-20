@@ -5,7 +5,7 @@ from pathlib import Path
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", env_prefix="APP_", env_file_encoding="utf-8")
 
-    PROGRAM_ENTRYPOINT: str = Field(default="runner.py:main", description="Module:function or script path")
+    PROGRAM_ENTRYPOINT: str = Field(default="mio_runner.py:main", description="Module:function or script path")
     MAX_FILE_SIZE_MB: int = 50
     ALLOWED_EXTENSIONS: list[str] | str = [".xlsx"]
     JOB_TTL_MINUTES: int = 120
