@@ -31,7 +31,7 @@ TABELLA_SOSTEGNO_XLSX = Path("/content/drive/MyDrive/DADA_project/Genera_Stampe/
 
 
 # Scrive in locale (filesystem Colab) per evitare rallentamenti/sync di Drive
-TMP_DIR = Path("/content/tmp_outputs")
+TMP_DIR = Path("./tmp_outputs")
 TMP_DIR.mkdir(parents=True, exist_ok=True)
 OUTPUT_DIR = TMP_DIR  # tutte le funzioni usano questa variabile
 
