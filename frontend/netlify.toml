@@ -1,4 +1,4 @@
-[build]
+B[build]
   command = "npm ci && npm run build"
   publish = "dist"
 
@@ -46,6 +46,18 @@
 [[redirects]]
   from = "/examples/*"
   to = "https://app-orario-backend.onrender.com/examples/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/logs/*"
+  to = "https://app-orario-backend.onrender.com/logs/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/jobs/*"
+  to = "https://app-orario-backend.onrender.com/jobs/:splat"
   status = 200
   force = true
 
